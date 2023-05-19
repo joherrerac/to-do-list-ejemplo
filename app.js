@@ -3,6 +3,8 @@
 const formulario = document.querySelector("#formulario");
 const tituloForm = document.querySelector("#titulo-formulario");
 const task = document.querySelector(".tareas");
+const total = document.querySelector("#total");
+const completadas = document.querySelector("#completadas");
 let tareas = [];
 
 console.log(formulario);
@@ -10,7 +12,8 @@ console.log(formulario);
 // eventos
 function eventos() {
     formulario.addEventListener("submit", validarFormulario);
-    task.addEventListener("click", eliminarTarea)
+    task.addEventListener("click", eliminarTarea);
+    task.addEventListener("click", tareaCompletada);
 }
 eventos();
 
@@ -67,14 +70,38 @@ function mostrarHTML() {
         ;
         task.appendChild(itemTarea)
     })
+
+    // mostrar total y completadas
+    const totalTareas = tareas.length;
+    total.textContent = `Total: ${totalTareas}`;
+    const tareasCompletadas = tareas.filter(item => item.estado === true).length;
+    completadas.textContent = `Completadas: ${tareasCompletadas}`
 }
 
-//crear un objeto
+//funcion eliminar tarea
 function eliminarTarea(e) {
     if(e.target.classList.contains("eliminar")) {
         const tareaID = Number(e.target.getAttribute("data-id"))
         // eliminar tarea
         const newTask = tareas.filter((item) => item.id !== tareaID);
+        tareas = newTask;
+        mostrarHTML();
+    }
+}
+
+//funcion completar tarea
+function tareaCompletada(e){
+    if(e.target.classList.contains("completada")) {
+        const tareaID = Number(e.target.getAttribute("data-id"))
+        // dar por completada la tarea
+        const newTask = tareas.map((item) => {
+            if (item.id === tareaID){
+                item.estado = !item.estado;
+                return item;
+            }else{
+                return item;
+            }
+        })
         tareas = newTask;
         mostrarHTML();
     }
